@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "@actual-app/api": "^1.0.9"
+  },
+  "name": "actual-budget-bluecoins-importer",
+  "version": "0.0.1",
+  "description": "A custom transaction importer that brings data from Bluecoins into Actual Budget",
+  "main": "index.js",
+  "repository": "https://github.com/alexytsu/actual-budget-bluecoins-importer",
+  "author": "Alex Su",
+  "license": "MIT"
+}
