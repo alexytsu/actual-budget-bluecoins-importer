@@ -1,12 +1,22 @@
 {
   "dependencies": {
-    "@actual-app/api": "^1.0.9"
+    "@actual-app/api": "^1.0.9",
+    "csvtojson": "^2.0.10",
+    "moment": "^2.24.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "build:run": "yarn build && node ./lib/index.js"
   },
   "name": "actual-budget-bluecoins-importer",
   "version": "0.0.1",
   "description": "A custom transaction importer that brings data from Bluecoins into Actual Budget",
-  "main": "index.js",
+  "main": "./lib/index.js",
   "repository": "https://github.com/alexytsu/actual-budget-bluecoins-importer",
   "author": "Alex Su",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@types/moment": "^2.13.0",
+    "typescript": "^3.7.4"
+  }
 }
