@@ -39,7 +39,7 @@ export interface ActualCategoryGroup {
 }
 
 export interface BluecoinsTransaction {
-  type: "Expense" | "Income" | "(Transfer)" | "(New Account)";
+  type: "Expense" | "Income" | "Transfer" | "New Account";
   date: string;
   title: string;
   amount: number;
@@ -132,7 +132,7 @@ export const getCategories = (
         .map(tr => {
           return {
             name: tr.category,
-            is_income: tr.type === "Income" || tr.type === "(New Account)",
+            is_income: tr.type === "Income" || tr.type === "New Account",
             group_id: tr.category_group
           };
         })
@@ -201,11 +201,14 @@ export const getTransactions = (
       }
     }
 
-    if (type === "(Transfer)") {
+    console.log(type);
+    if (type === "Transfer") {
+      console.log("Transfer", tr);
       if (amount < 0) {
         const otherTransaction = bluecoinsTransactions.find(
           other => other.date === date && other.amount === -amount
         );
+        console.log("counterpart", otherTransaction);
         if (otherTransaction) {
           const otherAccount = otherTransaction.account;
           const otherAcc = accounts.find(acc => acc.name === otherAccount);

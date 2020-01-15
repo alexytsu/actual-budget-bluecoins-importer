@@ -31,7 +31,7 @@ export interface ActualCategoryGroup {
     is_income: boolean;
 }
 export interface BluecoinsTransaction {
-    type: "Expense" | "Income" | "Transfer" | "New Account";
+    type: "Expense" | "Income" | "(Transfer)" | "(New Account)";
     date: string;
     title: string;
     amount: number;
@@ -41,6 +41,12 @@ export interface BluecoinsTransaction {
     notes: string;
     labels: string;
 }
+export interface ActualPayee {
+    id?: string;
+    name: string;
+    category?: string;
+    transfer_acct?: string;
+}
 export declare const getJSON: (filepath: string) => Promise<BluecoinsTransaction[]>;
 export declare const getMyAccounts: () => ActualAccount[];
 export declare const uploadAccounts: (accs: ActualAccount[]) => Promise<ActualAccount[]>;
@@ -48,7 +54,7 @@ export declare const getCategoryGroups: (transactions: BluecoinsTransaction[]) =
 export declare const uploadCategoryGroups: (category_groups: ActualCategoryGroup[]) => Promise<ActualCategoryGroup[]>;
 export declare const getCategories: (transactions: BluecoinsTransaction[], category_groups: ActualCategoryGroup[]) => ActualCategory[];
 export declare const uploadCategories: (categories: ActualCategory[]) => Promise<ActualCategory[]>;
-export declare const getTransactions: (bluecoinsTransactions: BluecoinsTransaction[], prelim_categories: ActualCategory[], categories: ActualCategory[], accounts: ActualAccount[]) => ActualTransaction[];
+export declare const getTransactions: (bluecoinsTransactions: BluecoinsTransaction[], prelim_categories: ActualCategory[], categories: ActualCategory[], accounts: ActualAccount[], payees: ActualPayee[]) => ActualTransaction[];
 export declare const cleanupCategories: (categories: ActualCategory[]) => Promise<void>;
 export interface AccountGroupedTransactions {
     account_id: string;

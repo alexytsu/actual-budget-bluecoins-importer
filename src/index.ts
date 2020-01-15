@@ -20,18 +20,15 @@ api
     );
     const accounts = await getMyAccounts();
     const accountsWithId = await uploadAccounts(accounts);
-    console.log(accountsWithId);
 
     const categoryGroups = getCategoryGroups(jsonTransactions);
     const categoryGroupsWithId = await uploadCategoryGroups(categoryGroups);
     const categories = getCategories(jsonTransactions, categoryGroupsWithId);
     const uploadedcategories = await uploadCategories(categories);
-    console.log("prelim categories", uploadedcategories);
 
     const payees = await api.getPayees();
 
     const actualCategoriesWithId = await api.getCategories();
-    console.log("actual", actualCategoriesWithId);
     const transactions = getTransactions(
       jsonTransactions,
       categories,
