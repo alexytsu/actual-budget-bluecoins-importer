@@ -48,7 +48,8 @@ export declare const getCategoryGroups: (transactions: BluecoinsTransaction[]) =
 export declare const uploadCategoryGroups: (category_groups: ActualCategoryGroup[]) => Promise<ActualCategoryGroup[]>;
 export declare const getCategories: (transactions: BluecoinsTransaction[], category_groups: ActualCategoryGroup[]) => ActualCategory[];
 export declare const uploadCategories: (categories: ActualCategory[]) => Promise<ActualCategory[]>;
-export declare const getTransactions: (bluecoinsTransactions: BluecoinsTransaction[], categories: ActualCategory[], accounts: ActualAccount[]) => ActualTransaction[];
+export declare const getTransactions: (bluecoinsTransactions: BluecoinsTransaction[], prelim_categories: ActualCategory[], categories: ActualCategory[], accounts: ActualAccount[]) => ActualTransaction[];
+export declare const cleanupCategories: (categories: ActualCategory[]) => Promise<void>;
 export interface AccountGroupedTransactions {
     account_id: string;
     transactions: ActualTransaction[];

@@ -39,7 +39,7 @@ export interface ActualCategoryGroup {
 }
 
 export interface BluecoinsTransaction {
-  type: "Expense" | "Income" | "Transfer" | "New Account";
+  type: "Expense" | "Income" | "Transfer" | "(New Account)";
   date: string;
   title: string;
   amount: number;
@@ -125,7 +125,7 @@ export const getCategories = (
         .map(tr => {
           return {
             name: tr.category,
-            is_income: tr.type === "Income",
+            is_income: tr.type === "Income" || tr.type === "(New Account)",
             group_id: tr.category_group
           };
         })
@@ -153,6 +153,9 @@ export const uploadCategories = async (
   categories: ActualCategory[]
 ): Promise<ActualCategory[]> => {
   const categoriesWithId = categories.map(async catg => {
+    if (catg.is_income) {
+      return { ...catg, id: "" };
+    }
     const id = await api.createCategory(catg);
     return { ...catg, id };
   });
@@ -162,6 +165,7 @@ export const uploadCategories = async (
 
 export const getTransactions = (
   bluecoinsTransactions: BluecoinsTransaction[],
+  prelim_categories: ActualCategory[],
   categories: ActualCategory[],
   accounts: ActualAccount[]
 ): ActualTransaction[] => {
@@ -176,7 +180,18 @@ export const getTransactions = (
     );
 
     const cat = categories.find(cat => cat.name === category);
-    const category_id = cat ? (cat.id ? cat.id : "") : "";
+    let category_id = "";
+    category_id = cat?.id ? cat?.id : "";
+
+    const cat_check = prelim_categories.find(cat => cat.name === category);
+    if (cat_check?.is_income) {
+      const income_cat = categories.find(ct => ct.name === "Income");
+      if (income_cat) {
+        if (income_cat.id) {
+          category_id = income_cat.id;
+        }
+      }
+    }
 
     return {
       account_id,
@@ -189,6 +204,16 @@ export const getTransactions = (
   });
 
   return transactions;
+};
+
+export const cleanupCategories = async (categories: ActualCategory[]) => {
+  const income_categories = categories
+    .filter(cat => cat.is_income)
+    .filter(cat => cat.name !== "Income");
+
+  income_categories.forEach(async cat =>
+    console.log(await api.deleteCategory(cat.id))
+  );
 };
 
 export interface AccountGroupedTransactions {
@@ -222,5 +247,5 @@ export const uploadTransactions = async (
     return api.importTransactions(gr.account_id, gr.transactions);
   });
 
-  return Promise.all(res);
+  return await Promise.all(res);
 };

@@ -8,12 +8,13 @@ import {
   uploadCategories,
   getTransactions,
   transactionsByAccount,
-  uploadTransactions
+  uploadTransactions,
+  cleanupCategories
 } from "./helpers";
 import api from "@actual-app/api";
 
 api
-  .runImport("Budget", async () => {
+  .runImport("Budget 2", async () => {
     const jsonTransactions = await getJSON(
       "./transaction_data/simplified_bluecoins_register.csv"
     );
@@ -24,17 +25,22 @@ api
     const categoryGroups = getCategoryGroups(jsonTransactions);
     const categoryGroupsWithId = await uploadCategoryGroups(categoryGroups);
     const categories = getCategories(jsonTransactions, categoryGroupsWithId);
-    const categoriesWithId = await uploadCategories(categories);
+    const uploadedcategories = await uploadCategories(categories);
+    console.log("prelim categories", uploadedcategories);
+
+    const actualCategoriesWithId = await api.getCategories();
+    console.log("actual", actualCategoriesWithId);
     const transactions = getTransactions(
       jsonTransactions,
-      categoriesWithId,
+      categories,
+      actualCategoriesWithId,
       accountsWithId
     );
+
     const transactionsGroupedByAccount = transactionsByAccount(transactions);
+    const results = await uploadTransactions(transactionsGroupedByAccount);
 
-    const hi = await uploadTransactions(transactionsGroupedByAccount);
-
-    console.log(hi);
+    console.log(results);
   })
   .then(() => {
     console.log("Ran to Completion!");
