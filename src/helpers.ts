@@ -39,7 +39,7 @@ export interface ActualCategoryGroup {
 }
 
 export interface BluecoinsTransaction {
-  type: "Expense" | "Income" | "Transfer" | "(New Account)";
+  type: "Expense" | "Income" | "(Transfer)" | "(New Account)";
   date: string;
   title: string;
   amount: number;
@@ -48,6 +48,13 @@ export interface BluecoinsTransaction {
   account: string;
   notes: string;
   labels: string;
+}
+
+export interface ActualPayee {
+  id?: string;
+  name: string;
+  category?: string;
+  transfer_acct?: string;
 }
 
 export const getJSON = async (
@@ -167,7 +174,8 @@ export const getTransactions = (
   bluecoinsTransactions: BluecoinsTransaction[],
   prelim_categories: ActualCategory[],
   categories: ActualCategory[],
-  accounts: ActualAccount[]
+  accounts: ActualAccount[],
+  payees: ActualPayee[]
 ): ActualTransaction[] => {
   const transactions: ActualTransaction[] = bluecoinsTransactions.map(tr => {
     const { date, type, title, amount, category, account, notes, labels } = tr;
@@ -189,6 +197,32 @@ export const getTransactions = (
       if (income_cat) {
         if (income_cat.id) {
           category_id = income_cat.id;
+        }
+      }
+    }
+
+    if (type === "(Transfer)") {
+      if (amount < 0) {
+        const otherTransaction = bluecoinsTransactions.find(
+          other => other.date === date && other.amount === -amount
+        );
+        if (otherTransaction) {
+          const otherAccount = otherTransaction.account;
+          const otherAcc = accounts.find(acc => acc.name === otherAccount);
+          if (otherAcc) {
+            const id = otherAcc.id;
+
+            const payee_id = payees.find(p => p.transfer_acct === id)?.id;
+
+            return {
+              account_id,
+              category_id: "",
+              date: date_string,
+              amount: amount * 100,
+              payee_id,
+              notes
+            };
+          }
         }
       }
     }

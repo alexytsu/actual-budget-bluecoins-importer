@@ -28,13 +28,16 @@ api
     const uploadedcategories = await uploadCategories(categories);
     console.log("prelim categories", uploadedcategories);
 
+    const payees = await api.getPayees();
+
     const actualCategoriesWithId = await api.getCategories();
     console.log("actual", actualCategoriesWithId);
     const transactions = getTransactions(
       jsonTransactions,
       categories,
       actualCategoriesWithId,
-      accountsWithId
+      accountsWithId,
+      payees
     );
 
     const transactionsGroupedByAccount = transactionsByAccount(transactions);
