@@ -2,7 +2,7 @@
   "dependencies": {
     "@actual-app/api": "^1.0.9",
     "csvtojson": "^2.0.10",
-    "moment": "^2.24.0"
+    "moment": "^2.29.2"
   },
   "scripts": {
     "build": "tsc",
